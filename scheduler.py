@@ -30,15 +30,27 @@ class RoundRobinScheduler:
         self.pid_counter += 1
 
     def run(self):
+        finished_processes = []
         print("\n[STARTING SCHEDULER]\n")
+        cycle = 1
         while self.queue:
+            print(f"{'-' * 20} ЦИКЛ {cycle} {'-' * 20}")
+            print("Текущая очередь:")
+            for process in self.queue:
+                print(process)
+
             process = self.queue.popleft()
             finished = process.run(self.quantum)
             if not finished:
                 self.queue.append(process)
             else:
                 print(f"[FINISHED] {process.name} (PID {process.pid}) завершён\n")
-            print("[ALL TASKS COMPLETE]")
+                finished_processes.append(process)
+            cycle += 1
+        print("\nЗавершённые процессы:")
+        for proc in finished_processes:
+            print(f"✔ {proc.name} (PID {proc.pid})")
+        print("[ALL TASKS COMPLETE]")
 
 
 scheduler = RoundRobinScheduler(quantum=9)
